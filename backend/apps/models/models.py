@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Table
+from sqlalchemy.orm import relationship
 from ..conf.connection import Base
 
 class DeleteMixIn():
@@ -26,3 +26,21 @@ class User(Base, DeleteMixIn, TimeStampMixIn):
     last_name = Column(String, nullable=False)
     password = Column(String, nullable=False)
 
+
+tags_comments = Table("tags_comments",
+    Column("comment_id",Integer, ForeignKey("comments.id")),
+    Column("tag_id",Integer, ForeignKey("tags.id"))
+)
+class Comment(Base, TimeStampMixIn, DeleteMixIn):
+    __tablename__ = "comments"
+    id = Column(Integer, primary_key= True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    content = Column(String, nullable=False)
+    users = relationship("User")
+    tags = relationship("Tag", secondary=tags_comments)
+
+class Tag(Base, TimeStampMixIn, DeleteMixIn):
+    __tablename__ = "tags"
+    id = Column(Integer, primary_key=True)
+    word = Column(String, nullable=False)
+    comments = relationship("Comment", secundary = tags_comments)
