@@ -1,31 +1,28 @@
 from pydantic import BaseModel
-from datetime import datetime
+from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from ..conf.connection import Base
 
 class DeleteMixIn():
     @property
     def is_deleted(self):
-        return self._is_delted
+        return self.is_delted
     def set_deleted(self,is_del:bool):
-        self._is_delted=is_del
-
-
-class User(BaseModel,DeleteMixIn):
-    pass
+        self.is_delted=is_del
 
 class TimeStampMixIn():
     @property
     def created_at(self):
-        self._created_at= datetime.now()
+        self.created_at= DateTime.now()
     @property
     def updated_at(self):
-        self._updated_at=datetime.now()
+        self.updated_at=DateTime.now()
 
-
-class User(BaseModel):
-    id : str
-    username : str
-    email : str
-    created_at : datetime
-    updated_at : datetime
-    is_deleted=False
+class User(Base, DeleteMixIn, TimeStampMixIn):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True)
+    username = Column(String, unique=True, nullable=False)
+    email = Column(String, unique=True , nullable=False)
+    name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
+    password = Column(String, nullable=False)
 
