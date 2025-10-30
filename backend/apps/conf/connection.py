@@ -1,5 +1,4 @@
-from sqlalchemy import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy import create_engine
 from .settings import DATABASE_LOCAL_URL
 
@@ -14,3 +13,6 @@ def get_db():
         yield instance
     finally:
         instance.close()
+
+def init_db():
+    Base.metadata.create_all(bind=engine)

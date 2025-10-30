@@ -27,7 +27,7 @@ class User(Base, DeleteMixIn, TimeStampMixIn):
     password = Column(String, nullable=False)
 
 
-tags_comments = Table("tags_comments",
+tags_comments = Table("tags_comments",Base.metadata,
     Column("comment_id",Integer, ForeignKey("comments.id")),
     Column("tag_id",Integer, ForeignKey("tags.id"))
 )
