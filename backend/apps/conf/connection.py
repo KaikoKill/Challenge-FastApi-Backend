@@ -1,8 +1,7 @@
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from backend.apps.models.models import Base
 from .settings import DATABASE_LOCAL_URL
-
-Base = declarative_base()
 
 engine = create_engine(DATABASE_LOCAL_URL)
 SessionLocal = sessionmaker(bind=engine)
