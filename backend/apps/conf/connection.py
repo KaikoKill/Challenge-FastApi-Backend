@@ -4,6 +4,13 @@ from sqlalchemy import create_engine
 from .settings import DATABASE_LOCAL_URL
 
 Base = declarative_base()
-engine = create_engine(DATABASE_LOCAL_URL)
 
+engine = create_engine(DATABASE_LOCAL_URL)
 SessionLocal = sessionmaker(bind=engine)
+
+def get_db():
+    try:
+        instance = SessionLocal()
+        yield instance
+    finally:
+        instance.close()

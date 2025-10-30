@@ -1,0 +1,1 @@
+from .models import Base, User, Tag, Comment, tags_comments
