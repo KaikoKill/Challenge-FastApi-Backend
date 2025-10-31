@@ -1,5 +1,4 @@
-from datetime import datetime
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 
 class UserBase(BaseModel):
@@ -7,16 +6,11 @@ class UserBase(BaseModel):
     email: EmailStr
     name: str
     last_name: str
+
 class UserCreate(UserBase):
-    password : str
+    password: str = Field(min_length=8, max_length=72)
     
-class UserResponse(UserBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-    
-class User_exists(BaseModel):
-    username : str
+class VerifyEmail(BaseModel):
     email : str
 
 class VerifyUser(BaseModel):
@@ -26,3 +20,17 @@ class VerifyUser(BaseModel):
 class UserLogin(BaseModel):
     username: str
     password: str
+
+class UserPublic(BaseModel):
+    id: int
+    username: str
+    email: str
+    name: str
+    last_name: str
+
+class ListUsers(BaseModel):
+    users: list[UserPublic]
+    count: int
+
+class UserById(BaseModel):
+    id: int

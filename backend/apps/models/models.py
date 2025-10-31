@@ -21,7 +21,7 @@ class User(Base, DeleteMixIn, TimeStampMixIn):
     email: Mapped[str] = mapped_column(String(255), unique=True , nullable=False)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     last_name: Mapped[str] = mapped_column(String(255), nullable=False)
-    password: Mapped[str] = mapped_column(String(255), nullable=False)
+    password: Mapped[str] = mapped_column(String(72), nullable=False)
     comments: Mapped[List["Comment"]] = relationship(back_populates="user", cascade="all, delete-orphan")
 
 tags_comments = Table(
