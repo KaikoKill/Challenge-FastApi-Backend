@@ -9,6 +9,14 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str = Field(min_length=8, max_length=72)
+
+class UserUpdate(BaseModel):
+    username: str | None = None
+    email: EmailStr | None = None
+    name: str | None = None
+    last_name: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
     
 class VerifyEmail(BaseModel):
     email : str
@@ -33,5 +41,3 @@ class ListUsers(BaseModel):
     users: list[UserPublic]
     count: int
 
-class UserById(BaseModel):
-    id: int

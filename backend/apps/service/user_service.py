@@ -21,10 +21,6 @@ def update_user(db: Session, user_db: User, user_update: UserBase) -> User:
     update_data = user_update.model_dump(exclude_unset=True)
     data  = update_data.items()
 
-    if "password" in update_data and update_data["password"]:
-        hashed_password = get_password_hash(update_data["password"])
-        update_data["password"] = hashed_password
-
     for key, value in data:
         setattr(user_db, key, value)
 
@@ -32,22 +28,22 @@ def update_user(db: Session, user_db: User, user_update: UserBase) -> User:
     db.commit()
     return user_db
 
-def delete_user(db:Session, user_db: User, user_delete: UserById ):
+def delete_user(db:Session, user_delete: int ):
     stmt = select(User).where(User.id == user_delete)
     result = db.execute(stmt)
     user = result.scalar_one()
-    user["is_deleted"] = True
+    user.is_deleted = True
+    db.add(user)
+    db.commit()
     return {
         "User_Delete": user
     }
 
-def get_user_by_id(db:Session, user_id: UserById):
+def get_user_by_id(db:Session, user_id: int):
     stmt = select(User).where(User.id == user_id)
     result = db.execute(stmt)
     user = result.scalar_one()
-    return {
-        "User": user
-    }
+    return user
 
 def get_users(db:Session):
     stmt = select(User).where(User.is_deleted == False)
@@ -69,10 +65,6 @@ def get_user_by_username(db : Session, username: str) -> User | None:
     result = db.execute(stmt).scalar_one()
     return result
 
-def get_current_user_db(db: Session, user_id: int) -> User | None:
-    stmt = select(User).where(User.id == user_id)
-    result = db.execute(stmt).scalar_one()
-    return result
 
 def authenticate(db: Session, username: str, password: str) -> User | None:
 

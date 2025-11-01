@@ -4,8 +4,6 @@ import jwt
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy import create_engine
 
-from ..service.user_service import get_current_user_db
-
 from ..models.models import Base, User
 from .settings import DATABASE_LOCAL_URL
 from .settings import settings
@@ -32,3 +30,10 @@ def get_db() -> Generator[Session, None, None]:
 SessionDep= Annotated[Session, Depends(get_db)]
 TokenDep = Annotated[str, Depends(reusable_oauth2)]
 
+def current_user_dep(db: SessionDep, token: TokenDep):
+    payload: dict = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
+    sub : str = payload.get("sub")
+    user = db.get(User, sub)
+    return user
+
+CurrentUserDep = Annotated[User, Depends(current_user_dep)]
