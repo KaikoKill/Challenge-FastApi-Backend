@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class UserBase(BaseModel):
@@ -18,7 +18,7 @@ class VerifyUser(BaseModel):
     
 
 class UserLogin(BaseModel):
-    username: str
+    email: str
     password: str
 
 class UserPublic(BaseModel):
@@ -27,6 +27,7 @@ class UserPublic(BaseModel):
     email: str
     name: str
     last_name: str
+    model_config = ConfigDict(from_attributes=True)
 
 class ListUsers(BaseModel):
     users: list[UserPublic]

@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
     DATABASE_URL: str = os.getenv("DATABASE_URL", DATABASE_LOCAL_URL)
     SECRET_KEY: str = os.getenv("SECRET_KEY", "todopython123")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "5000")
 
 
 settings = Settings()

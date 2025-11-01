@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func
+
 from ..models.schemas import *
 from ..models.models import User
 from ..conf.security import get_password_hash, verify_password
@@ -18,7 +19,7 @@ def create_user(db: Session, user_create: UserCreate) -> User:
 
 def update_user(db: Session, user_db: User, user_update: UserBase) -> User:
     update_data = user_update.model_dump(exclude_unset=True)
-    data = update_data.items()
+    data  = update_data.items()
 
     if "password" in update_data and update_data["password"]:
         hashed_password = get_password_hash(update_data["password"])
@@ -63,15 +64,23 @@ def get_users(db:Session):
     }
 
 
-def get_user_by_email(db : Session, email: str) -> User | None:
-    stmt = select(User).where(User.email == email)
-    result = db.execute(stmt).one()
+def get_user_by_username(db : Session, username: str) -> User | None:
+    stmt = select(User).where(User.username == username)
+    result = db.execute(stmt).scalar_one()
     return result
 
-def authenticate(db: Session, email: str, password: str) -> User | None:
-    db_user = get_user_by_email(db, email)
+def get_current_user_db(db: Session, user_id: int) -> User | None:
+    stmt = select(User).where(User.id == user_id)
+    result = db.execute(stmt).scalar_one()
+    return result
+
+def authenticate(db: Session, username: str, password: str) -> User | None:
+
+    db_user = get_user_by_username(db, username)
     if not db_user:
         return None
-    if not verify_password(password, db_user.hashed_password):
+    if not verify_password(password, db_user.password):
         return None
     return db_user
+
+

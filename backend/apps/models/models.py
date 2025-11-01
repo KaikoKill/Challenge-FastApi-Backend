@@ -13,7 +13,6 @@ class TimeStampMixIn:
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
-
 class User(Base, DeleteMixIn, TimeStampMixIn):
     __tablename__ = "users"
     id:Mapped[int]= mapped_column(primary_key=True)
@@ -43,3 +42,4 @@ class Tag(Base, TimeStampMixIn, DeleteMixIn):
     id: Mapped[int] = mapped_column(primary_key=True)
     word: Mapped[str] = mapped_column(String(255), nullable=False)
     comments: Mapped[List["Comment"]] = relationship(secondary = tags_comments, back_populates="tags")
+
